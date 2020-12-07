@@ -11,16 +11,13 @@ def print_time_and_result(function):
 	return decorated
 
 class Bag():
-	def __init__(self, name, parents=[], children=[]):
-		self.name=name
-		self.parents = parents # Each parent has quantity 1
-		self.children = children # Each child is a tuple of (int quantity, Bag object)
-
+	def __init__(self, name):
+		self.name = name
+		self.parents = [] # list of Bag
+		self.children = [] # list of tuples form: (int quantity, Bag child)
+	
 	def __repr__(self):
-		return "Bag '{}'".format(self.name)
-		# return "Bag {} | p {} | c {}".format(self.name, self.parents, len(self.children) or 0)
-		return "Bag {} {}".format(self.name, self.children)
-		# return "Bag {} {}".format(self.name, self.parents)
+		return "Bag {}".format(self.name)
 
 # return a list of tuples in the form (int quantity, string child name)
 def _extract_children(children):
@@ -29,56 +26,55 @@ def _extract_children(children):
 		find_values = re.findall(r'(\d+) (\w+ \w+)', child)
 		quantity, name = find_values[0]
 		list_of_children.append((quantity, name))
-	# print(len(list_of_children),list_of_children)
 	return list_of_children
 
-def _recursive_search(bag_dict, bag, names):
-	names.append(bag_dict[bag].name)
-	if bag_dict[bag].parents != []:
-		for paren in bag_dict[bag].parents:
-			_recursive_search(bag_dict, paren, names)
+def _recursive_part1(bag, names):
+	names.add(bag.name)
+	if bag.parents != []:
+		for parent in bag.parents:
+			_recursive_part1(parent, names)
+			
+def _recursive_part2(bag):
+	count = 1
+	if bag.children == []:
+		return 1
+	
+	for child in bag.children:
+		count += int(child[0]) * _recursive_part2(child[1])
 
-def _recursive_mul(bag_dict, bag):
-	pass
+	return count
 
 @print_time_and_result
-def part1(lines):
-	bag_dict = {}
+def _build_tree(lines):
+	bags = {} # name:Bag
 	for line in lines:
-		if line:
-			bags_parent_child = line.split(" bags contain ")
-			bags_parent_child[1] = re.findall(r'(\d+ \w+ \w+) bags*', bags_parent_child[1])
-			parent = str(bags_parent_child[0]).strip()
-			children = _extract_children(bags_parent_child[1])
+		parent_and_children = line.split(" bags contain ")
+		parent = parent_and_children[0]
+		children = _extract_children(re.findall(r'(\d+ \w+ \w+) bags*', parent_and_children[1]))
 
-			if parent not in bag_dict:
-				bag_dict[parent] = Bag(parent, children=children,parents=[])
-			else:
-				for child in children:
-					bag_dict[parent].children.append(child)
-
-
-			for child in children:
-				child_name = child[1]
-				if child_name not in bag_dict:
-					bag_dict[child_name] = Bag(child_name, parents=[parent],children=[])
-				else:
-					bag_dict[child_name].parents.append(parent)
-
-	names = []
-	for paren in bag_dict['shiny gold'].parents:
-		_recursive_search(bag_dict,paren, names)
-	print(len(set(names)))
-
-	return "Not started yet"
-
-@print_time_and_result
-def part2(lines):
-	return "Not started yet"
+		if parent not in bags:
+			bags[parent] = Bag(parent)
+		
+		for child in children:
+			if child[1] not in bags:
+				bags[child[1]] = Bag(child[1])
+			bags[parent].children.append((child[0], bags[child[1]]))
+			bags[child[1]].parents.append(bags[parent])
+	
+	outer_bags = set()
+	for parent in bags['shiny gold'].parents:
+		_recursive_part1(parent, outer_bags)
+	print("part1 answer: {}".format(len(outer_bags)))
+	
+	inner_bags = 0
+	for child in bags['shiny gold'].children:
+		inner_bags += int(child[0]) * _recursive_part2(child[1])
+	print("part2 answer: {}".format(inner_bags))
+	
 
 if __name__ == '__main__':
 	with open("input.txt","r") as file:
 		lines = file.read().split(".\n")
+		lines.remove("")
 
-	part1(lines)
-	part2(lines)
+	_build_tree(lines)
