@@ -10,6 +10,7 @@ def print_time_and_result(function):
 		result = function(*args, **kwargs)
 		print("answer for {}:\\t{}".format(function.__name__, result))
 		print("elapsed time: {} seconds\\n".format(time() - start_time))
+		return result
 	return decorated
 
 @print_time_and_result
