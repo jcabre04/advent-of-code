@@ -39,7 +39,7 @@ def create(year: str, day: str) -> None:
     year_test.mkdir(exist_ok=True)
     day_dir.mkdir(exist_ok=True)
 
-    create_file(day_dir / "run.py", RUN_DEFAULT)
+    create_file(day_dir / "run.py", RUN_DEFAULT.format(year, day))
     create_file(day_dir / "input.txt", INPUT_DEFAULT)
     create_file(year_test / f"{day}_test.py", TEST_DEFAULT.format(year, day))
 
