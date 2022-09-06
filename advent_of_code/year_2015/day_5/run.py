@@ -65,7 +65,7 @@ def part1(input: list[str]) -> int:
 
 
 def part2(input: list[str]) -> int:
-    "Counts how many strings match the given the new criteria"
+    "Counts how many strings match the new criteria"
     nice_strings = 0
 
     for string in input:
