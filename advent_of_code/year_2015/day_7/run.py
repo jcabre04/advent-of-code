@@ -138,13 +138,18 @@ def assemble_circuit(instructions: list[str]) -> dict[str, Wire]:
 
 
 def part1(input: list[str]) -> int:
-    "Part 1"
-    return 0
+    "Assemble a circuit with the given instructions and find the signal of Wire 'a'"
+    circuit = assemble_circuit(input)
+    return circuit["a"].calculate()
 
 
 def part2(input: list[str]) -> int:
-    "Part 2"
-    return 0
+    "Overwrite Wire's b initial signal with the answer for part1. Then, redo part1 to find the new Wire 'a' signal"
+    circuit = assemble_circuit(input)
+    part1_answer = circuit["a"].calculate()
+
+    input[input.index("1674 -> b")] = f"{part1_answer} -> b"
+    return part1(input)
 
 
 if __name__ == "__main__":
