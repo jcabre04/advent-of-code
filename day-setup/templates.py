@@ -1,20 +1,20 @@
-RUN_DEFAULT = """def part1(input: list[str]) -> int:
+RUN_DEFAULT = """def part1(instructions: list[str]) -> int:
     "Part 1"
     return 0
 
 
-def part2(input: list[str]) -> int:
+def part2(instructions: list[str]) -> int:
     "Part 2"
     return 0
 
 
 if __name__ == "__main__":
-    input_file = "advent_of_code/{}/{}/input.txt"
+    input_file = "advent_of_code/{}/{}/instructions.txt"
     with open(input_file, "r") as file:
-        input = [line.strip() for line in file.readlines()]
+        instructions = [line.strip() for line in file.readlines()]
 
-    print(f"Part 1: {{part1(input)}}")
-    print(f"Part 2: {{part2(input)}}")
+    print(f"Part 1: {{part1(instructions)}}")
+    print(f"Part 2: {{part2(instructions)}}")
 """
 
 INPUT_DEFAULT = """"""
