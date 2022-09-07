@@ -1,5 +1,5 @@
-from typing import Union
 import re
+from typing import Union
 from collections import defaultdict
 
 NOT_EXPRESSION = re.compile(r"NOT (.*) -> (.*)")
@@ -67,13 +67,42 @@ class Wire:
         return self.signal
 
 
-def _check_exists_in_circuit(circuit, param) -> Union[int, Wire]:
+def _check_exists_in_circuit(
+    circuit: defaultdict[str, Wire], param: str
+) -> Union[int, Wire]:
     "Checks if the 'param' string is an integer value or a Wire. Convert to appropriate and return it"
     if isinstance(param, str) and not param.isdigit():
-        param = circuit[param]
+        converted = circuit[param]
     else:
-        param = int(param)
-    return param
+        converted = int(param)
+    return converted
+
+
+def _process_instr_1_param(
+    circuit: defaultdict[str, Wire], line: str, re_expression: re.Pattern[str], function
+) -> None:
+    "Process NOT and ECHO instructions, setting up the wire for this instruction"
+    data = re_expression.match(line)
+    assert data is not None
+    source = _check_exists_in_circuit(circuit, data.group(1))
+    dest = circuit[data.group(2)]
+    assert isinstance(dest, Wire)
+    dest.inputs = [source]
+    dest.gate = function
+
+
+def _process_instr_2_param(
+    circuit: defaultdict[str, Wire], line: str, re_expression: re.Pattern[str], function
+) -> None:
+    "Process AND, OR, LSHIFT, and RSHIFT instructions, setting up the wire for this instruction"
+    data = re_expression.match(line)
+    assert data is not None
+    source1 = _check_exists_in_circuit(circuit, data.group(1))
+    source2 = _check_exists_in_circuit(circuit, data.group(2))
+    dest = circuit[data.group(3)]
+    assert isinstance(dest, Wire)
+    dest.inputs = [source1, source2]
+    dest.gate = function
 
 
 def assemble_circuit(instructions: list[str]) -> dict[str, Wire]:
@@ -82,57 +111,17 @@ def assemble_circuit(instructions: list[str]) -> dict[str, Wire]:
 
     for line in instructions:
         if "NOT" in line:
-            data = NOT_EXPRESSION.match(line)
-            assert data is not None
-            source = _check_exists_in_circuit(circuit, data.group(1))
-            dest = circuit[data.group(2)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source]
-            dest.gate = not_gate
+            _process_instr_1_param(circuit, line, NOT_EXPRESSION, not_gate)
         elif "AND" in line:
-            data = AND_EXPRESSION.match(line)
-            assert data is not None
-            source1 = _check_exists_in_circuit(circuit, data.group(1))
-            source2 = _check_exists_in_circuit(circuit, data.group(2))
-            dest = circuit[data.group(3)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source1, source2]
-            dest.gate = and_gate
+            _process_instr_2_param(circuit, line, AND_EXPRESSION, and_gate)
         elif "OR" in line:
-            data = OR_EXPRESSION.match(line)
-            assert data is not None
-            source1 = _check_exists_in_circuit(circuit, data.group(1))
-            source2 = _check_exists_in_circuit(circuit, data.group(2))
-            dest = circuit[data.group(3)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source1, source2]
-            dest.gate = or_gate
+            _process_instr_2_param(circuit, line, OR_EXPRESSION, or_gate)
         elif "LSHIFT" in line:
-            data = LSHIFT_EXPRESSION.match(line)
-            assert data is not None
-            source1 = _check_exists_in_circuit(circuit, data.group(1))
-            source2 = _check_exists_in_circuit(circuit, data.group(2))
-            dest = circuit[data.group(3)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source1, source2]
-            dest.gate = lshift_gate
+            _process_instr_2_param(circuit, line, LSHIFT_EXPRESSION, lshift_gate)
         elif "RSHIFT" in line:
-            data = RSHIFT_EXPRESSION.match(line)
-            assert data is not None
-            source1 = _check_exists_in_circuit(circuit, data.group(1))
-            source2 = _check_exists_in_circuit(circuit, data.group(2))
-            dest = circuit[data.group(3)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source1, source2]
-            dest.gate = rshift_gate
+            _process_instr_2_param(circuit, line, RSHIFT_EXPRESSION, rshift_gate)
         else:
-            data = ECHO_EXPRESSION.match(line)
-            assert data is not None
-            source = _check_exists_in_circuit(circuit, data.group(1))
-            dest = circuit[data.group(2)]
-            assert isinstance(dest, Wire)
-            dest.inputs = [source]
-            dest.gate = echo_gate
+            _process_instr_1_param(circuit, line, ECHO_EXPRESSION, echo_gate)
 
     return circuit
 
@@ -145,9 +134,7 @@ def part1(input: list[str]) -> int:
 
 def part2(input: list[str]) -> int:
     "Overwrite Wire's b initial signal with the answer for part1. Then, redo part1 to find the new Wire 'a' signal"
-    circuit = assemble_circuit(input)
-    part1_answer = circuit["a"].calculate()
-
+    part1_answer = part1(input)
     input[input.index("1674 -> b")] = f"{part1_answer} -> b"
     return part1(input)
 
