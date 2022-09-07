@@ -9,7 +9,7 @@ def part2(instructions: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    input_file = "advent_of_code/{}/{}/instructions.txt"
+    input_file = "advent_of_code/{}/{}/input.txt"
     with open(input_file, "r") as file:
         instructions = [line.strip() for line in file.readlines()]
 
