@@ -24,12 +24,10 @@ TEST_DEFAULT = """from advent_of_code.{}.{} import run
 
 class TestPart1:
     def test_part1_example(self) -> None:
-        # assert run.part1("(())") == 0
-        pass
+        assert run.part1([]) == 0
 
 
 class TestPart2:
     def test_part2_example(self) -> None:
-        # assert run.part2(")") == 1
-        pass
+        assert run.part2([]) == 0
 """
