@@ -59,7 +59,7 @@ def part2(instructions: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    input_file = "advent_of_code/year_2015/day_8/input.txt"
+    input_file = "advent_of_code/year_2015/day_08/input.txt"
     with open(input_file, "r") as file:
         instructions = [line.strip() for line in file.readlines()]
 

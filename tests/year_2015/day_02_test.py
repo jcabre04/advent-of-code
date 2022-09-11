@@ -1,4 +1,4 @@
-from advent_of_code.year_2015.day_2 import run
+from advent_of_code.year_2015.day_02 import run
 
 
 class TestPart1:

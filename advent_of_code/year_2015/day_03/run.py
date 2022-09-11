@@ -48,7 +48,7 @@ def part2(input: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    input_file = "advent_of_code/year_2015/day_3/input.txt"
+    input_file = "advent_of_code/year_2015/day_03/input.txt"
     with open(input_file, "r") as file:
         input = [line.strip() for line in file.readlines()]
 
