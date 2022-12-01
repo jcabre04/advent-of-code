@@ -6,10 +6,10 @@ from templates import RUN_DEFAULT, INPUT_DEFAULT, TEST_DEFAULT
 
 def validate_date(year: str, day: str) -> None:
     "Ensures year and day fit between expected ranges"
-    if not 2015 <= int(year) <= 2021:
+    if not 2015 <= int(year) <= 2022:
         raise Exception(
             "Year is out of range. \
-            Valid range (inclusuive): 2015-2021"
+            Valid range (inclusuive): 2015-2022"
         )
     if not 1 <= int(day) <= 25:
         raise Exception(
