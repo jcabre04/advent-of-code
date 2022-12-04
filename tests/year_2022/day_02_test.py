@@ -1,4 +1,4 @@
-from advent_of_code.year_2022.day_2 import run
+from advent_of_code.year_2022.day_02 import run
 
 TEST_INPUT = ["A Y", "B X", "C Z"]
 

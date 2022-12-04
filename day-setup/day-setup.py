@@ -29,6 +29,8 @@ def create(year: str, day: str) -> None:
     src_dir = "advent_of_code"
     test_dir = "tests"
     year = f"year_{year}"
+    if day in ("123456789"):
+        day = f"0{day}"
     day = f"day_{day}"
 
     year_dir = Path(f"{src_dir}/{year}")

@@ -1,4 +1,4 @@
-from advent_of_code.year_2022.day_3 import run
+from advent_of_code.year_2022.day_03 import run
 
 TEST_INPUT = [
     "vJrwpWtwJgWrhcsFMMfFFhFp",

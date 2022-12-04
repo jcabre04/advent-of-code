@@ -1,4 +1,4 @@
-from advent_of_code.year_2022.day_1 import run
+from advent_of_code.year_2022.day_01 import run
 
 TEST_INPUT = [6000, 4000, 11000, 24000, 10000]
 

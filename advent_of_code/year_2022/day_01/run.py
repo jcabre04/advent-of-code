@@ -9,7 +9,7 @@ def part2(elves: list[int]) -> int:
 
 
 if __name__ == "__main__":
-    input_file = "advent_of_code/year_2022/day_1/input.txt"
+    input_file = "advent_of_code/year_2022/day_01/input.txt"
     with open(input_file, "r") as file:
         current_elf = 0
         elves = []
